@@ -1,0 +1,17 @@
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\bin\Debug\net6.0-windows\MazeRunners.exe
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\bin\Debug\net6.0-windows\MazeRunners.deps.json
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\bin\Debug\net6.0-windows\MazeRunners.runtimeconfig.json
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\bin\Debug\net6.0-windows\MazeRunners.dll
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\bin\Debug\net6.0-windows\ref\MazeRunners.dll
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\bin\Debug\net6.0-windows\MazeRunners.pdb
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.csproj.AssemblyReference.cache
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.Form1.resources
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.csproj.GenerateResource.cache
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.AssemblyInfoInputs.cache
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.AssemblyInfo.cs
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.csproj.CoreCompileInputs.cache
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.dll
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\ref\MazeRunners.dll
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.pdb
+C:\Users\2davi\source\repos\MazeRunners\MazeRunners\obj\Debug\net6.0-windows\MazeRunners.genruntimeconfig.cache

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "6e5ee8d9-ff6d-460c-a433-cbc4e0c4403c": {
+      "ProjectGuid": "6e5ee8d9-ff6d-460c-a433-cbc4e0c4403c",
+      "DisplayName": "MazeRunners",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
