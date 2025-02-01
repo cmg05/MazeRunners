@@ -28,16 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initial));
             startButton = new Button();
             SuspendLayout();
             // 
             // startButton
             // 
-            startButton.Location = new Point(784, 103);
+            startButton.Font = new Font("Arial Rounded MT Bold", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            startButton.Location = new Point(258, 338);
             startButton.Name = "startButton";
             startButton.Size = new Size(147, 65);
             startButton.TabIndex = 2;
-            startButton.Text = "Start";
+            startButton.Text = "START";
             startButton.UseVisualStyleBackColor = true;
             startButton.Click += startButton_Click;
             // 
@@ -45,7 +47,8 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1760, 839);
+            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            ClientSize = new Size(682, 753);
             Controls.Add(startButton);
             Name = "Initial";
             Text = "Maze";
