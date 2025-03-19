@@ -49,9 +49,6 @@ namespace MazeRunners
             CreateTraps(maze, ObjectType.TrapClosedDoor);
             CreateTraps(maze, ObjectType.TrapPitOfThorns);
             CreateTraps(maze, ObjectType.TrapPoisonousGas);
-
-            
-
         }
 
         public enum ObjectType
@@ -115,8 +112,6 @@ namespace MazeRunners
             Pen line = new Pen(Color.Gray, 1);
             SolidBrush stuffing = new SolidBrush(Color.White);
 
-
-
             /* Paint */
             if (positionX != -1 && positionY != -1)
             {
@@ -148,12 +143,12 @@ namespace MazeRunners
                     }
                     else if (maze[x, y] == ObjectType.BlueFlags)
                     {
-                        Image image = Image.FromFile(Application.StartupPath + @"\pictures\blueflag.jpg");
+                        Image image = Image.FromFile(Application.StartupPath + @"\pictures\blueflag.png");
                         g.DrawImage(image, r);
                     }
                     else if (maze[x, y] == ObjectType.RedFlags)
                     {
-                        Image image = Image.FromFile(Application.StartupPath + @"\pictures\redflag.jpg");
+                        Image image = Image.FromFile(Application.StartupPath + @"\pictures\redflag.png");
                         g.DrawImage(image, r);
                     }
                 }
@@ -366,7 +361,8 @@ namespace MazeRunners
         {
             var info = typeChips[currentChip];
             string cooldown = info["Cooldown"];
-            string turn = info["Turn"];
+            //string turn = info["Turn"];
+            string turn = numberTurn.ToString();
 
 
             switch (trap)
@@ -374,12 +370,14 @@ namespace MazeRunners
                 case ObjectType.TrapPitOfThorns:
 
                     // Si puedo Aplicar el poder
-                    if (int.Parse(turn) == int.Parse(cooldown) && power)
+                    if (int.Parse(turn) >= int.Parse(cooldown) && power)
                     {
                         if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip)
                         {
                             MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
+                            maze[x, y] = currentChip;
+                            maze[newX, newY] = 0;
+                            turn = "0";
                             Map.Refresh();
                             break;
                         }
@@ -387,33 +385,38 @@ namespace MazeRunners
                         else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
                         {
                             MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
-                            maze[newX, newY] = 0;
-                            maze[x, y] = currentChip;
+                            int backX = x;
+                            int backY = y - 1;
+
+                            if (backY >= 0 && maze[backX, backY] == 0)
+                            {
+                                maze[backX, backY] = currentChip;
+                                maze[x, y] = 0;
+                                turn = "0";
+                                Map.Refresh();
+                            }
                             break;
                         }
-
-                        turn = numberTurn.ToString();
                     }
 
                     Random r = new Random();
                     int n = r.Next(0, roads.Count);
                     var pos = roads[n];
+                    maze[x, y] = 0;
                     maze[pos.Item1, pos.Item2] = currentChip;
-                    maze[newX, newY] = 0;
                     Map.Refresh();
                     break;
 
                 case ObjectType.TrapPoisonousGas:
 
                     // Si puedo Aplicar el poder
-                    if (int.Parse(turn) == int.Parse(cooldown) && power)
+                    if (int.Parse(turn) >= int.Parse(cooldown) && power)
                     {
                         if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip
                             || ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
                         {
                             MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
+                            turn = "0";
                             Map.Refresh();
                             break;
                         }
@@ -421,19 +424,25 @@ namespace MazeRunners
                         else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
                         {
                             MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
-                            maze[newX, newY] = 0;
-                            maze[x, y] = currentChip;
-                            Map.Refresh();
+                            int backX = x;
+                            int backY = y - 1;
+
+                            if (backY >= 0 && maze[backX, backY] == 0)
+                            {
+                                maze[backX, backY] = currentChip;
+                                maze[x, y] = 0;
+                                turn = "0";
+                                Map.Refresh();
+                            }
                             break;
                         }
 
                         else if (ObjectType.BlueChipKiller == currentChip || ObjectType.RedChipKiller == currentChip)
                         {
                             MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
+                            turn = "0";
                             int value = Math.Max(0, int.Parse(turn) + 2);
-                            if (value < 0) value = 0;
+                            //if (value < 0) value = 0;
                             Map.Refresh();
                             break;
                         }
@@ -441,68 +450,65 @@ namespace MazeRunners
                         else if (ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
                         {
                             MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
+                            turn = "0";
                             int value = Math.Max(0, int.Parse(turn) + 3);
-                            if (value < 0) value = 0;
+                            //if (value < 0) value = 0;
                             Map.Refresh();
                             break;
                         }
-                        turn = numberTurn.ToString();
                     }
-                    //turn = (int.Parse(turn) + 1).ToString();
+                    
                     turn = Math.Max(0, int.Parse(turn) - 1).ToString();
                     Map.Refresh();
                     break;
 
-                case ObjectType.TrapClosedDoor:
-                    // Si puedo Aplicar el poder
-                    if (int.Parse(turn) == int.Parse(cooldown) && power)
-                    {
-                        if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip
-                            || ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
-                        {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
-                            Map.Refresh();
-                            break;
-                        }
+                //case ObjectType.TrapClosedDoor:
+                //    // Si puedo Aplicar el poder
+                //    if (int.Parse(turn) >= int.Parse(cooldown) && power)
+                //    {
+                //        if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip
+                //            || ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
+                //        {
+                //            MessageBox.Show("The special ability has been applied");
+                //            turn = "0";
+                //            Map.Refresh();
+                //            break;
+                //        }
 
-                        else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
-                        {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
-                            maze[newX, newY] = 0;
-                            maze[x, y] = currentChip;
-                            Map.Refresh();
-                            break;
-                        }
+                //        else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
+                //        {
+                //            MessageBox.Show("The special ability has been applied");
+                //            turn = "0";
+                //            maze[newX, newY] = 0;
+                //            maze[x, y] = currentChip;
+                //            Map.Refresh();
+                //            break;
+                //        }
 
-                        else if (ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
-                        {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
-                            int value = Math.Max(0, int.Parse(turn) + 1);
-                            if (value < 0) value = 0;
-                            Map.Refresh();
-                            break;
-                        }
+                //        else if (ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
+                //        {
+                //            MessageBox.Show("The special ability has been applied");
+                //            turn = "0";
+                //            int value = Math.Max(0, int.Parse(turn) + 1);
+                //            if (value < 0) value = 0;
+                //            Map.Refresh();
+                //            break;
+                //        }
 
-                        else if (ObjectType.BlueChipKiller == currentChip || ObjectType.RedChipKiller == currentChip)
-                        {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = info["Turn"];
-                            int value = Math.Max(0, int.Parse(turn) + 2);
-                            if (value < 0) value = 0;
-                            Map.Refresh();
-                            break;
-                        }
-                        
-                        turn = numberTurn.ToString();
-                    }
-                    //turn = (int.Parse(turn) + 3).ToString();
-                    turn = Math.Max(0, int.Parse(turn) - 3).ToString();
-                    Map.Refresh();
-                    break;
+                //        else if (ObjectType.BlueChipKiller == currentChip || ObjectType.RedChipKiller == currentChip)
+                //        {
+                //            MessageBox.Show("The special ability has been applied");
+                //            turn = "0";
+                //            int value = Math.Max(0, int.Parse(turn) + 2);
+                //            if (value < 0) value = 0;
+                //            Map.Refresh();
+                //            break;
+                //        }
+                //    }
+                    
+                //    turn = Math.Max(0, int.Parse(turn) - 3).ToString();
+                //    Map.Refresh();
+                //    break;
             }
         }
 
@@ -553,7 +559,8 @@ namespace MazeRunners
                     string cooldown = info["Cooldown"];
                     Cooldown.Text = $"{cooldown}";
 
-                    string turn = info["Turn"];
+                    string turn = numberTurn.ToString();
+                    //turn = numberTurn.ToString();
                     Turn.Text = $"{turn}";
                 }
             }
