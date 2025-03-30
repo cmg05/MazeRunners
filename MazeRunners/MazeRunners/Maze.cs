@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
@@ -23,7 +24,6 @@ namespace MazeRunners
 
 
         private bool gameStarted = false;
-        //private string[,] maze = new string[20, 20];
         private ObjectType[,] maze = new ObjectType[20, 20];
         private List<(int, int)> posRedFlafs = new List<(int, int)>();
         private List<(int, int)> posBlueFlafs = new List<(int, int)>();
@@ -71,34 +71,6 @@ namespace MazeRunners
             TrapPoisonousGas = 14,
             TrapPitOfThorns = 15,
             Obs = 16,
-        }
-
-
-        /* Guardar posibles movimientos realizados*/
-        private bool MovesChip(bool[,] mask, ObjectType[,] maze, int startX, int startY, int endX, int endY, List<(int, int)> roads, ObjectType chip)
-        {
-            int x = startX;
-            int y = startY;
-
-            if (x == endX && y == endY) return true;
-
-            for (int i = 0; i < directions.GetLength(0); i++)
-            {
-                int newX = x + directions[i, 0];
-                int newY = y + directions[i, 1];
-
-                if (isValidMov(newX, newY, chip) && !mask[newX, newY])
-                {
-                    mask[newX, newY] = true;
-                    roads.Add((newX, newY));
-
-                    if (MovesChip(mask, maze, newX, newY, endX, endY, roads, chip)) return true;
-
-                    mask[newX, newY] = false;
-                    roads.RemoveAt(roads.Count - 1);
-                }
-            }
-            return false;
         }
 
         /* Dibujar tablero */
@@ -169,131 +141,11 @@ namespace MazeRunners
                 if (maze[x, y] == 0)
                 {
                     maze[x, y] = flag;
-                    flags = flags - 1;
+                    flags--;
                     pos.Add((x, y));
                 }
             }
         }
-
-        /* Crear los obstaculos */
-        private static void CreateObs(ObjectType[,] maze, List<(int, int)> roads)
-        {
-            int validPosObs = (400 - roads.Count);
-            //int numObs = validPosObs;
-            int numObs = validPosObs * 90 / 100;
-            Random r = new Random();
-
-            while (numObs > 0)
-            {
-                int x = r.Next(0, maze.GetLength(0));
-                int y = r.Next(0, maze.GetLength(1));
-
-                if (maze[x, y] == 0 && !roads.Contains((x, y)))
-                {
-                    maze[x, y] = ObjectType.Obs;
-                    numObs = numObs - 1;
-                }
-            }
-        }
-
-        /* Asignar los distintos tipos de fichas */
-        private static void TypeChips()
-        {
-            typeChips = new Dictionary<ObjectType, Dictionary<string, string>>();
-            typeChips.Add(ObjectType.RedChipWarrior, new Dictionary<string, string>
-            {
-                { "Name", "Red Warrior" },
-                { "Skill", "Deactivate Trap" },
-                { "Description", "Can deactivate a trap in your path" },
-                { "Cooldown", "4" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.RedChipExplorer, new Dictionary<string, string>
-            {
-                { "Name", "Red Explorer" },
-                { "Skill", "Quick Detection" },
-                { "Description", "Reduces cooldown time by one turn" },
-                { "Cooldown", "3" },
-                { "Turn", "0" },
-            });
-
-
-            typeChips.Add(ObjectType.RedChipKiller, new Dictionary<string, string>
-            {
-                { "Name", "Red Killer" },
-                { "Skill", "Silent Deflection" },
-                { "Description", "Avoid a trap by move" },
-                { "Cooldown", "5" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.RedChipHealer, new Dictionary<string, string>
-            {
-                { "Name", "Red Healer" },
-                { "Skill", "Antidote" },
-                { "Description", "Take a step back when you fall into a trap" },
-                { "Cooldown", "3" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.RedChipWizard, new Dictionary<string, string>
-            {
-                { "Name", "Red Wizard" },
-                { "Skill", "Magic Lighting" },
-                { "Description", "Reduces cooldown time by three turns" },
-                { "Cooldown", "4" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.BlueChipWarrior, new Dictionary<string, string>
-            {
-                { "Name", "Blue Warrior" },
-                { "Skill", "Deactivate Trap" },
-                { "Description", "Can deactivate a trap in your path" },
-                { "Cooldown", "4" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.BlueChipExplorer, new Dictionary<string, string>
-            {
-                { "Name", "Blue Explorer" },
-                { "Skill", "Quick Detection" },
-                { "Description", "Reduces cooldown time by one turn" },
-                { "Cooldown", "3" },
-                { "Turn", "0" },
-            });
-
-
-            typeChips.Add(ObjectType.BlueChipKiller, new Dictionary<string, string>
-            {
-                { "Name", "Blue Killer" },
-                { "Skill", "Silent Deflection" },
-                { "Description", "Avoid a trap by move" },
-                { "Cooldown", "5" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.BlueChipHealer, new Dictionary<string, string>
-            {
-                { "Name", "Blue Healer" },
-                { "Skill", "Antidote" },
-                { "Description", "Take a step back when you fall into a trap" },
-                { "Cooldown", "3" },
-                { "Turn", "0" },
-            });
-
-            typeChips.Add(ObjectType.BlueChipWizard, new Dictionary<string, string>
-            {
-                { "Name", "Blue Wizard" },
-                { "Skill", "Magic Lighting" },
-                { "Description", "Reduces cooldown time by three turns" },
-                { "Cooldown", "4" },
-                { "Turn", "0" },
-            });
-        }
-
-
 
         /* Crear las fichas de cada equipo */
         private void CreateTeam(ObjectType[,] maze, List<(int, int)> pos, int n, List<(int, int)> roads)
@@ -313,27 +165,192 @@ namespace MazeRunners
                     List<(int, int)> newRoad = new List<(int, int)>();
                     for (int i = 0; i < pos.Count; i++)
                     {
-                        int lastPositionX = pos[i].Item1;
-                        int lastPositionY = pos[i].Item2;
+                        int endX = pos[i].Item1;
+                        int endY = pos[i].Item2;
                         bool[,] mask = new bool[20, 20];
-                        if (!MovesChip(mask, maze, x, y, lastPositionX, lastPositionY, newRoad, (ObjectType)players)) find = false;
+                        if (!CreatePaths(mask, maze, x, y, endX, endY, newRoad, (ObjectType)players)) find = false;
                     }
 
                     if (find)
                     {
                         foreach (var item in newRoad)
                         {
-                            if (roads.Contains(item)) continue;
-                            roads.Add(item);
+                            if (!roads.Contains(item)) roads.Add(item);
                         }
                         maze[x, y] = (ObjectType)players;
-                        players = players - 1;
+                        players--;
                     }
                 }
 
             }
         }
 
+
+        /* Guardar posibles movimientos realizados*/
+        private bool CreatePaths(bool[,] mask, ObjectType[,] maze, int startX, int startY, int endX, int endY, List<(int, int)> roads, ObjectType chip)
+        {
+            if (!isValidMov(startX, startY, chip) || !isValidMov(endX, endY, chip)) return false;
+
+            Queue<(int, int)> queue = new Queue<(int, int)>();
+            Dictionary<(int, int), (int, int)> parent = new Dictionary<(int, int), (int, int)>();
+            queue.Enqueue((startX, startY));
+            parent[(startX, startY)] = (-1, -1); 
+            mask[startX, startY] = true; 
+
+            bool found = false;
+
+            while (queue.Count > 0 && !found)
+            {
+                var current = queue.Dequeue();
+                if (current.Item1 == endX && current.Item2 == endY)
+                {
+                    found = true;
+                    break;
+                }
+
+                for (int i = 0; i < directions.GetLength(0); i++)
+                {
+                    int newX = current.Item1 + directions[i, 0];
+                    int newY = current.Item2 + directions[i, 1];
+
+                    if (isValidMov(newX, newY, chip) && !mask[newX, newY])
+                    {
+                        mask[newX, newY] = true; 
+                        queue.Enqueue((newX, newY));
+                        parent[(newX, newY)] = current;
+                    }
+                }
+            }
+
+            if (!found) return false;
+            ReconstructPath((endX, endY), parent, roads);
+            return true;
+        }
+
+        /* Reconstruir los caminos*/
+        private void ReconstructPath((int, int) end, Dictionary<(int, int), (int, int)> parent, List<(int, int)> roads)
+        {
+            var current = end;
+            while (current != (-1, -1)) 
+            {
+                roads.Insert(0, current); 
+                current = parent[current];
+            }
+        }
+
+
+        /* Crear los obstaculos */
+        private static void CreateObs(ObjectType[,] maze, List<(int, int)> roads)
+        {
+            for (int x = 0; x < maze.GetLength(0); x++)
+            {
+                for (int y = 0; y < maze.GetLength(1); y++)
+                {
+                    if (maze[x, y] == 0 && !roads.Contains((x, y)))
+                    {
+                        maze[x, y] = ObjectType.Obs;
+                    }
+                }
+            }
+        }
+
+
+        /* Asignar los distintos tipos de fichas */
+        private static void TypeChips()
+        {
+            typeChips = new Dictionary<ObjectType, Dictionary<string, string>>();
+            typeChips.Add(ObjectType.RedChipWarrior, new Dictionary<string, string>
+            {
+                { "Name", "Red Warrior" },
+                { "Skill", "Deactivate Trap" },
+                { "Description", "Can deactivate a trap in your path" },
+                { "Cooldown", "4" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.RedChipExplorer, new Dictionary<string, string>
+            {
+                { "Name", "Red Explorer" },
+                { "Skill", "Agile Leap" },
+                { "Description", "Jump the trap" },
+                { "Cooldown", "4" },
+                { "Turn", "0" },
+            });
+
+
+            typeChips.Add(ObjectType.RedChipKiller, new Dictionary<string, string>
+            {
+                { "Name", "Red Killer" },
+                { "Skill", "Substitution" },
+                { "Description", "Create a clone" },
+                { "Cooldown", "5" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.RedChipHealer, new Dictionary<string, string>
+            {
+                { "Name", "Red Healer" },
+                { "Skill", "Antidote" },
+                { "Description", "Increase turn by 2" },
+                { "Cooldown", "3" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.RedChipWizard, new Dictionary<string, string>
+            {
+                { "Name", "Red Wizard" },
+                { "Skill", "Magic Lighting" },
+                { "Description", "Swaps position with the enemy wizard" },
+                { "Cooldown", "5" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.BlueChipWarrior, new Dictionary<string, string>
+            {
+                { "Name", "Blue Warrior" },
+                { "Skill", "Deactivate Trap" },
+                { "Description", "Can deactivate a trap in your path" },
+                { "Cooldown", "4" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.BlueChipExplorer, new Dictionary<string, string>
+            {
+                { "Name", "Blue Explorer" },
+                { "Skill", "Agile Leap" },
+                { "Description", "Jump the trap" },
+                { "Cooldown", "4" },
+                { "Turn", "0" },
+            });
+
+
+            typeChips.Add(ObjectType.BlueChipKiller, new Dictionary<string, string>
+            {
+                { "Name", "Blue Killer" },
+                { "Skill", "Substitution" },
+                { "Description", "Create a clone" },
+                { "Cooldown", "5" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.BlueChipHealer, new Dictionary<string, string>
+            {
+                { "Name", "Blue Healer" },
+                { "Skill", "Antidote" },
+                { "Description", "Increase turn by 2" },
+                { "Cooldown", "3" },
+                { "Turn", "0" },
+            });
+
+            typeChips.Add(ObjectType.BlueChipWizard, new Dictionary<string, string>
+            {
+                { "Name", "Blue Wizard" },
+                { "Skill", "Magic Lighting" },
+                { "Description", "Swaps position with the enemy wizard" },
+                { "Cooldown", "5" },
+                { "Turn", "0" },
+            });
+        }
 
         /* Crear las trampas */
         private static void CreateTraps(ObjectType[,] array, ObjectType trap)
@@ -361,40 +378,87 @@ namespace MazeRunners
         {
             var info = typeChips[currentChip];
             string cooldown = info["Cooldown"];
-            //string turn = info["Turn"];
-            string turn = numberTurn.ToString();
-
+            string turn = info["Turn"];
 
             switch (trap)
             {
                 case ObjectType.TrapPitOfThorns:
 
-                    // Si puedo Aplicar el poder
-                    if (int.Parse(turn) >= int.Parse(cooldown) && power)
+                    if (int.Parse(turn) == int.Parse(cooldown) && power)
                     {
                         if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip)
                         {
-                            MessageBox.Show("The special ability has been applied");
-                            maze[x, y] = currentChip;
+                            MessageBox.Show("The trap has been deactivated");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
                             maze[newX, newY] = 0;
-                            turn = "0";
+                            maze[x, y] = currentChip;
                             Map.Refresh();
                             break;
                         }
 
-                        else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
+                        else if (ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
                         {
-                            MessageBox.Show("The special ability has been applied");
-                            int backX = x;
-                            int backY = y - 1;
+                            MessageBox.Show("Exchange");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
 
-                            if (backY >= 0 && maze[backX, backY] == 0)
+                            // Buscar la posición del Wizard enemigo
+                            bool swapped = false;
+                            for (int i = 0; i < maze.GetLength(0); i++)
                             {
-                                maze[backX, backY] = currentChip;
-                                maze[x, y] = 0;
-                                turn = "0";
-                                Map.Refresh();
+                                for (int j = 0; j < maze.GetLength(1); j++)
+                                {
+                                    if (maze[i, j] == (currentChip == ObjectType.BlueChipWizard ? ObjectType.RedChipWizard : ObjectType.BlueChipWizard))
+                                    {
+                                        // Intercambiar posiciones
+                                        maze[x, y] = maze[i, j]; // Mover el Wizard enemigo a la posición de la trampa
+                                        maze[i, j] = currentChip; // Mover el Wizard actual a la posición del enemigo
+                                        swapped = true;
+                                        break;
+                                    }
+                                }
+                                if (swapped) break; 
                             }
+
+                            Map.Refresh();
+                            break;
+                        }
+
+                        else if (ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
+                        {
+                            MessageBox.Show("Time Jump");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
+                            int nextX = newX + (newX - x); // Calcula la dirección del movimiento
+                            int nextY = newY + (newY - y);
+
+                            // Verificar si la siguiente posición es válida (dentro del laberinto y no bloqueada)
+                            if (nextX >= 0 && nextX < maze.GetLength(0) && nextY >= 0 && nextY < maze.GetLength(1) && maze[nextX, nextY] == 0)
+                            {
+                                maze[x, y] = 0;
+                                maze[newX, newY] = 0;
+                                maze[nextX, nextY] = currentChip; 
+                            }
+
+                            else
+                            {
+                                maze[x, y] = 0; 
+                                maze[newX, newY] = currentChip;
+                            }
+
+                            Map.Refresh();
+                            break;
+                        }
+
+                        else if (ObjectType.BlueChipKiller == currentChip || ObjectType.RedChipKiller == currentChip)
+                        {
+                            MessageBox.Show("Kage Bunshin no Jutsu");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
+                            maze[newX, newY] = currentChip;
+                            maze[x, y] = currentChip;
+                            Map.Refresh();
                             break;
                         }
                     }
@@ -409,108 +473,143 @@ namespace MazeRunners
 
                 case ObjectType.TrapPoisonousGas:
 
-                    // Si puedo Aplicar el poder
-                    if (int.Parse(turn) >= int.Parse(cooldown) && power)
+                    if (int.Parse(turn) == int.Parse(cooldown) && power)
                     {
-                        if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip
-                            || ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
+                        if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip)
                         {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = "0";
+                            MessageBox.Show("The trap has been deactivated");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
+                            maze[newX, newY] = 0;
+                            maze[x, y] = currentChip;
                             Map.Refresh();
                             break;
                         }
 
-                        else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
+                        else if (ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
                         {
-                            MessageBox.Show("The special ability has been applied");
-                            int backX = x;
-                            int backY = y - 1;
+                            MessageBox.Show("Time Jump");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
+                            int nextX = newX + (newX - x); 
+                            int nextY = newY + (newY - y);
 
-                            if (backY >= 0 && maze[backX, backY] == 0)
+                            if (nextX >= 0 && nextX < maze.GetLength(0) && nextY >= 0 && nextY < maze.GetLength(1) && maze[nextX, nextY] == 0)
                             {
-                                maze[backX, backY] = currentChip;
                                 maze[x, y] = 0;
-                                turn = "0";
-                                Map.Refresh();
+                                maze[newX, newY] = 0;
+                                maze[nextX, nextY] = currentChip;
                             }
+
+                            else
+                            {
+                                maze[x, y] = 0;
+                                maze[newX, newY] = currentChip;
+                            }
+
+                            Map.Refresh();
+                            break;
+
+
+                        }
+
+                        else if (ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
+                        {
+                            MessageBox.Show("Exchange");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
+
+                            bool swapped = false;
+                            for (int i = 0; i < maze.GetLength(0); i++)
+                            {
+                                for (int j = 0; j < maze.GetLength(1); j++)
+                                {
+                                    if (maze[i, j] == (currentChip == ObjectType.BlueChipWizard ? ObjectType.RedChipWizard : ObjectType.BlueChipWizard))
+                                    {
+                                        maze[x, y] = maze[i, j]; 
+                                        maze[i, j] = currentChip; 
+                                        swapped = true;
+                                        break;
+                                    }
+                                }
+                                if (swapped) break; 
+                            }
+
+                            Map.Refresh();
                             break;
                         }
 
                         else if (ObjectType.BlueChipKiller == currentChip || ObjectType.RedChipKiller == currentChip)
                         {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = "0";
-                            int value = Math.Max(0, int.Parse(turn) + 2);
-                            //if (value < 0) value = 0;
-                            Map.Refresh();
-                            break;
-                        }
-
-                        else if (ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
-                        {
-                            MessageBox.Show("The special ability has been applied");
-                            turn = "0";
-                            int value = Math.Max(0, int.Parse(turn) + 3);
-                            //if (value < 0) value = 0;
+                            MessageBox.Show("Kage Bunshin no Jutsu");
+                            info["Turn"] = "0";
+                            Turn.Text = "0";
+                            maze[newX, newY] = currentChip;
+                            maze[x, y] = currentChip;
                             Map.Refresh();
                             break;
                         }
                     }
-                    
-                    turn = Math.Max(0, int.Parse(turn) - 1).ToString();
+
+                    int directionX = x - newX;
+                    int directionY = y - newY;
+                    int backX = x + (directionX * 3);
+                    int backY = y + (directionY * 3);
+
+                    if (backX >= 0 && backX < maze.GetLength(0) && backY >= 0 && backY < maze.GetLength(1))
+                    {
+                        if (maze[backX, backY] == 0)
+                        {
+                            maze[backX, backY] = currentChip;
+                            maze[x, y] = 0;
+                            positionX = backX;
+                            positionY = backY;
+                        }
+                        else
+                        {
+                            backX = x + directionX;
+                            backY = y + directionY;
+
+                            if (maze[backX, backY] == 0)
+                            {
+                                maze[backX, backY] = currentChip;
+                                maze[x, y] = 0;
+                                positionX = backX;
+                                positionY = backY;
+                            }
+
+                            else
+                            {
+                                MessageBox.Show("There is no room to turn back");
+                            }
+                        }
+                    }
+
                     Map.Refresh();
                     break;
 
-                //case ObjectType.TrapClosedDoor:
-                //    // Si puedo Aplicar el poder
-                //    if (int.Parse(turn) >= int.Parse(cooldown) && power)
-                //    {
-                //        if (ObjectType.BlueChipWarrior == currentChip || ObjectType.RedChipWarrior == currentChip
-                //            || ObjectType.BlueChipWizard == currentChip || ObjectType.RedChipWizard == currentChip)
-                //        {
-                //            MessageBox.Show("The special ability has been applied");
-                //            turn = "0";
-                //            Map.Refresh();
-                //            break;
-                //        }
+                case ObjectType.TrapClosedDoor:
 
-                //        else if (ObjectType.BlueChipHealer == currentChip || ObjectType.RedChipHealer == currentChip)
-                //        {
-                //            MessageBox.Show("The special ability has been applied");
-                //            turn = "0";
-                //            maze[newX, newY] = 0;
-                //            maze[x, y] = currentChip;
-                //            Map.Refresh();
-                //            break;
-                //        }
+                    if (int.Parse(turn) == int.Parse(cooldown) && power)
+                    {
+                        if (ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
+                        {
+                            MessageBox.Show("Time Jump");
+                            info["Turn"] = "2";
+                            Turn.Text = "2";
+                            Map.Refresh();
+                            break;
+                        }
 
-                //        else if (ObjectType.BlueChipExplorer == currentChip || ObjectType.RedChipExplorer == currentChip)
-                //        {
-                //            MessageBox.Show("The special ability has been applied");
-                //            turn = "0";
-                //            int value = Math.Max(0, int.Parse(turn) + 1);
-                //            if (value < 0) value = 0;
-                //            Map.Refresh();
-                //            break;
-                //        }
+                    }
 
-                //        else if (ObjectType.BlueChipKiller == currentChip || ObjectType.RedChipKiller == currentChip)
-                //        {
-                //            MessageBox.Show("The special ability has been applied");
-                //            turn = "0";
-                //            int value = Math.Max(0, int.Parse(turn) + 2);
-                //            if (value < 0) value = 0;
-                //            Map.Refresh();
-                //            break;
-                //        }
-                //    }
-                    
-                //    turn = Math.Max(0, int.Parse(turn) - 3).ToString();
-                //    Map.Refresh();
-                //    break;
+                    info["Turn"] = "0";
+                    Turn.Text = "0";
+                    Map.Refresh();
+                    break;
             }
         }
+
 
         /* Chequear si el movimiento es valido */
         private bool isValidMov(int positionX, int positionY, ObjectType chip)
@@ -534,8 +633,21 @@ namespace MazeRunners
         {
             positionX = e.Y * maze.GetLength(1) / Map.Width;
             positionY = e.X * maze.GetLength(0) / Map.Height;
+
+            var currentChipValue = (int)maze[positionX, positionY];
+            bool isEvenTurn = (numberTurn % 2) == 0;
+            bool isValidSelection = false;
+
+            if (isEvenTurn)
+            {
+                isValidSelection = currentChipValue >= 6 && currentChipValue <= 10;
+            }
+            else
+            {
+                isValidSelection = currentChipValue >= 1 && currentChipValue <= 5;
+            }
             
-            if ((int)maze[positionX, positionY] > 10 || (int)maze[positionX, positionY] == 0)
+            if (!isValidSelection || (int)maze[positionX, positionY] > 10 || (int)maze[positionX, positionY] == 0)
             {
                 positionX = -1;
                 positionY = -1;
@@ -543,7 +655,7 @@ namespace MazeRunners
             else
             {
                 var currentChip = maze[positionX, positionY];
-                var info = typeChips[currentChip];
+                var info = typeChips[currentChip]; 
 
                 if (typeChips.ContainsKey(currentChip))
                 {
@@ -559,9 +671,18 @@ namespace MazeRunners
                     string cooldown = info["Cooldown"];
                     Cooldown.Text = $"{cooldown}";
 
-                    string turn = numberTurn.ToString();
-                    //turn = numberTurn.ToString();
-                    Turn.Text = $"{turn}";
+                    int currentTurn = int.Parse(info["Turn"]);
+                    int currentCooldown = int.Parse(info["Cooldown"]);
+
+                    if (currentTurn + 1 > currentCooldown)
+                    {
+                        info["Turn"] = (currentCooldown).ToString();
+                    }
+                    else
+                    {
+                        info["Turn"] = (currentTurn + 1).ToString();
+                    }
+                    Turn.Text = info["Turn"];
                 }
             }
 
@@ -583,13 +704,13 @@ namespace MazeRunners
                     maze[positionX, positionY] = 0;
                     positionX = positionX - 1;
                     Map.Refresh();
-                    CollectFlag(positionX, positionY, chip);
+                    CollectFlag(positionX, positionY, chip, posRedFlafs, posBlueFlafs);
 
-                    if (maze[positionX - 1, positionY] == ObjectType.TrapClosedDoor || maze[positionX - 1, positionY] == ObjectType.TrapPitOfThorns
-                    || maze[positionX - 1, positionY] == ObjectType.TrapPoisonousGas)
+                    if (trap == ObjectType.TrapClosedDoor || trap == ObjectType.TrapPitOfThorns
+                    || trap == ObjectType.TrapPoisonousGas)
                     {
-                        MessageBox.Show("Oh! You have fallen into a trap" + maze[positionX - 1, positionY]);
-                        ApplyTrapEffect(maze[positionX - 1, positionY], chip, positionX, positionY, positionX - 1, positionY, true);
+                        MessageBox.Show("Oh! You have fallen into a trap" + trap);
+                        ApplyTrapEffect(trap, chip, positionX, positionY, positionX - 1, positionY, true);
 
                         var info = typeChips[chip];
                         if (typeChips.ContainsKey(chip))
@@ -603,12 +724,23 @@ namespace MazeRunners
                             string cooldown = info["Cooldown"];
                             Cooldown.Text = $"{cooldown}";
 
-                            string turn = info["Turn"];
-                            Turn.Text = $"{turn}";
+                            int currentTurn = int.Parse(info["Turn"]);
+                            int currentCooldown = int.Parse(info["Cooldown"]);
+
+                            if (currentTurn + 1 > currentCooldown)
+                            {
+                                info["Turn"] = (currentCooldown).ToString();
+                            }
+                            else
+                            {
+                                info["Turn"] = (currentTurn + 1).ToString();
+                            }
+                            Turn.Text = info["Turn"];
+
                         }
                     }
                 }
-
+                
                 /* Finaliza el turno */
                 MessageBox.Show("Shift ended");
                 numberTurn++;
@@ -633,13 +765,13 @@ namespace MazeRunners
                     maze[positionX, positionY] = 0;
                     positionX = positionX + 1;
                     Map.Refresh();
-                    CollectFlag(positionX, positionY, chip);
+                    CollectFlag(positionX, positionY, chip, posRedFlafs, posBlueFlafs);
 
-                    if (maze[positionX + 1, positionY] == ObjectType.TrapClosedDoor || maze[positionX + 1, positionY] == ObjectType.TrapPitOfThorns
-                    || maze[positionX + 1, positionY] == ObjectType.TrapPoisonousGas)
+                    if (trap == ObjectType.TrapClosedDoor || trap == ObjectType.TrapPitOfThorns
+                    || trap == ObjectType.TrapPoisonousGas)
                     {
-                        MessageBox.Show("Oh! You have fallen into a trap" + maze[positionX + 1, positionY]);
-                        ApplyTrapEffect(maze[positionX + 1, positionY], chip, positionX, positionY, positionX + 1, positionY, true);
+                        MessageBox.Show("Oh! You have fallen into a trap" + trap);
+                        ApplyTrapEffect(trap, chip, positionX - 1, positionY, positionX + 1, positionY, true);
                     }
                 }
 
@@ -667,13 +799,13 @@ namespace MazeRunners
                     maze[positionX, positionY] = 0;
                     positionY = positionY - 1;
                     Map.Refresh();
-                    CollectFlag(positionX, positionY, chip);
+                    CollectFlag(positionX, positionY, chip, posRedFlafs, posBlueFlafs);
 
-                    if (maze[positionX, positionY - 1] == ObjectType.TrapClosedDoor || maze[positionX, positionY - 1] == ObjectType.TrapPitOfThorns
-                    || maze[positionX, positionY - 1] == ObjectType.TrapPoisonousGas)
+                    if (trap == ObjectType.TrapClosedDoor || trap == ObjectType.TrapPitOfThorns
+                    || trap == ObjectType.TrapPoisonousGas)
                     {
-                        MessageBox.Show("Oh! You have fallen into a trap" + maze[positionX, positionY - 1]);
-                        ApplyTrapEffect(maze[positionX, positionY - 1], chip, positionX, positionY, positionX, positionY - 1, true);
+                        MessageBox.Show("Oh! You have fallen into a trap" + trap);
+                        ApplyTrapEffect(trap, chip, positionX, positionY, positionX, positionY - 1, true);
                     }
                 }
 
@@ -701,13 +833,13 @@ namespace MazeRunners
                     maze[positionX, positionY] = 0;
                     positionY = positionY + 1;
                     Map.Refresh();
-                    CollectFlag(positionX, positionY, chip);
+                    CollectFlag(positionX, positionY, chip, posRedFlafs, posBlueFlafs);
 
-                    if (maze[positionX, positionY + 1] == ObjectType.TrapClosedDoor || maze[positionX, positionY + 1] == ObjectType.TrapPitOfThorns
-                    || maze[positionX, positionY + 1] == ObjectType.TrapPoisonousGas)
+                    if (trap == ObjectType.TrapClosedDoor || trap == ObjectType.TrapPitOfThorns
+                    || trap == ObjectType.TrapPoisonousGas)
                     {
-                        MessageBox.Show("Oh! You have fallen into a trap" + maze[positionX, positionY + 1]);
-                        ApplyTrapEffect(maze[positionX, positionY + 1], chip, positionX, positionY, positionX, positionY + 1, true);
+                        MessageBox.Show("Oh! You have fallen into a trap" + trap);
+                        ApplyTrapEffect(trap, chip, positionX, positionY, positionX, positionY + 1, true);
                     }
                 }
 
@@ -723,38 +855,50 @@ namespace MazeRunners
         }
 
         /* Recolección de las banderas */
-        private void CollectFlag(int positionX, int positionY, ObjectType chip)
+        private void CollectFlag(int positionX, int positionY, ObjectType chip, List<(int, int)> posRedFlafs, List<(int, int)> posBlueFlafs)
         {
-            // Verifica si hay una bandera en la posición actual
-            if (maze[positionX, positionY] == ObjectType.BlueFlags && (int)chip >= 6 && (int)chip <= 10)
+            if (posBlueFlafs.Contains((positionX, positionY)))
             {
-                blueTeamFlags++;
-                maze[positionX, positionY] = 0;
-                BlueFlags.Text = $"Blue Team Flags: {blueTeamFlags}";
-                Map.Refresh();
-                CheckVictory("Blue Team"); // Verifica si el equipo azul ha ganado
+                if ((int)chip >= 6 && (int)chip <= 10)
+                {
+                    posBlueFlafs.Remove((positionX, positionY));
+                    Blue.Text = "Blue Flags: " + posBlueFlafs.Count;
+                    Map.Refresh();
+                    if (posBlueFlafs.Count == 0)
+                    {
+                        CheckVictory("Blue Team");
+                    }
+                    
+                }
             }
-            else if (maze[positionX, positionY] == ObjectType.RedFlags && (int)chip >= 1 && (int)chip <= 5)
+            else if (posRedFlafs.Contains((positionX, positionY)))
             {
-                redTeamFlags++;
-                maze[positionX, positionY] = 0;
-                RedFlags.Text = $"Red Team Flags: {redTeamFlags}";
-                Map.Refresh();
-                CheckVictory("Red Team"); // Verifica si el equipo rojo ha ganado
+                if ((int)chip >= 1 && (int)chip <= 5)
+                {
+                    posRedFlafs.Remove((positionX, positionY));
+                    Red.Text = "Red Flags: " + posRedFlafs.Count;
+                    Map.Refresh();
+                    if (posRedFlafs.Count == 0)
+                    {
+                        CheckVictory("Red Team");
+                    }
+                }
             }
         }
 
         /* Verificación de la victoria */
         private void CheckVictory(string team)
         {
-            if (team == "Blue Team" && blueTeamFlags >= 5)
+            if (team == "Blue Team")
             {
                 MessageBox.Show("The blue team has won!");
             }
-            else if (team == "Red Team" && redTeamFlags >= 5)
+            else if (team == "Red Team")
             {
                 MessageBox.Show("The red team has won!");
             }
+            Application.Exit();
         }
     }
 }
+

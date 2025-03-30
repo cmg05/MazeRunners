@@ -51,8 +51,8 @@ namespace MazeRunners
             Turn = new Label();
             label5 = new Label();
             Chip = new Label();
-            RedFlags = new Label();
-            BlueFlags = new Label();
+            Red = new Label();
+            Blue = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBlueTeam).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxRedTeam).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Map).BeginInit();
@@ -266,36 +266,39 @@ namespace MazeRunners
             Chip.TabIndex = 18;
             Chip.Text = "chip";
             // 
-            // RedFlags
+            // Red
             // 
-            RedFlags.AutoSize = true;
-            RedFlags.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point);
-            RedFlags.ForeColor = SystemColors.ScrollBar;
-            RedFlags.Location = new Point(940, 297);
-            RedFlags.Name = "RedFlags";
-            RedFlags.Size = new Size(17, 23);
-            RedFlags.TabIndex = 19;
-            RedFlags.Text = "-";
+            Red.AutoSize = true;
+            Red.BackColor = Color.Transparent;
+            Red.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point);
+            Red.ForeColor = SystemColors.ScrollBar;
+            Red.Location = new Point(940, 297);
+            Red.Name = "Red";
+            Red.Size = new Size(17, 23);
+            Red.TabIndex = 19;
+            Red.Text = "-";
             // 
-            // BlueFlags
+            // Blue
             // 
-            BlueFlags.AutoSize = true;
-            BlueFlags.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point);
-            BlueFlags.ForeColor = SystemColors.ScrollBar;
-            BlueFlags.Location = new Point(1161, 297);
-            BlueFlags.Name = "BlueFlags";
-            BlueFlags.Size = new Size(17, 23);
-            BlueFlags.TabIndex = 20;
-            BlueFlags.Text = "-";
+            Blue.AutoSize = true;
+            Blue.BackColor = Color.Transparent;
+            Blue.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point);
+            Blue.ForeColor = SystemColors.ScrollBar;
+            Blue.Location = new Point(940, 336);
+            Blue.Name = "Blue";
+            Blue.Size = new Size(17, 23);
+            Blue.TabIndex = 20;
+            Blue.Text = "-";
             // 
             // Maze
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(0, 0, 64);
+            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1439, 953);
-            Controls.Add(BlueFlags);
-            Controls.Add(RedFlags);
+            Controls.Add(Blue);
+            Controls.Add(Red);
             Controls.Add(Chip);
             Controls.Add(label5);
             Controls.Add(Turn);
@@ -345,7 +348,7 @@ namespace MazeRunners
         private Label Turn;
         private Label label5;
         private Label Chip;
-        private Label RedFlags;
-        private Label BlueFlags;
+        private Label Red;
+        private Label Blue;
     }
 }

@@ -35,9 +35,9 @@
             // startButton
             // 
             startButton.Font = new Font("Arial Rounded MT Bold", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            startButton.Location = new Point(258, 338);
+            startButton.Location = new Point(261, 139);
             startButton.Name = "startButton";
-            startButton.Size = new Size(147, 65);
+            startButton.Size = new Size(158, 65);
             startButton.TabIndex = 2;
             startButton.Text = "START";
             startButton.UseVisualStyleBackColor = true;
